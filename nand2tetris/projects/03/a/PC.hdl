@@ -1,0 +1,42 @@
+
+/**
+ * A 16-bit counter with reset, load, and inc control bits.
+ * if      (reset(t) == 1) out(t+1) = 0
+ * else if (load(t) == 1)  out(t+1) = in(t)
+ * else if (inc(t) == 1)   out(t+1) = out(t) + 1
+ * else                    out(t+1) = out(t)
+ */
+
+CHIP PC {
+    IN in[16], load, inc, reset;
+    OUT out[16];
+
+    PARTS:
+    Or(a=reset, b=load, out=rl);
+    Or(a=rl, b=inc, out=sel);
+
+
+    // load 
+    Not(in=reset, out=notReset);
+    And(a=notReset, b=load, out=ld);
+    Set16(in=ld, out=mask1);
+    And16(a=in, b=mask1, out=out2);
+
+    // inc
+    Not(in=load, out=notLoad);
+    And(a=notReset, b=notLoad, out=nrl);
+    And(a=nrl, b=inc, out=inrl);
+    Inc16(in=out1, out=tempInc);
+    Set16(in=inrl, out=mask2);
+    And16(a=tempInc, b=mask2, out=out3); 
+
+    // output
+    Or16(a=out2, b=out3, out=out4);
+
+    Register(in=out4, load=sel, out=out1);
+    Or16(a=out1, out=out);
+     
+
+
+}
+
