@@ -1,0 +1,212 @@
+class Snake{
+    field List head;
+    field List tail;
+    field List body_part;
+    field int space_size;
+
+    constructor Snake new(){
+
+        let space_size = 20; 
+        let body_part = List.new(Point.new(0, 0), null, null);
+        let head = body_part;
+        let tail = body_part;
+
+        do Screen.drawRectangle(0, 0, space_size, space_size);
+
+
+        return this;
+    }
+
+
+    method void moveDown(Food food){
+        var boolean flag;
+        var int x;
+        var int y;
+        var Point ptr;
+        var List newHead;
+        var List temp;
+        
+        let ptr = head.getData();
+        let x = ptr.get_x();
+        let y = ptr.get_y() + space_size;
+
+
+        // draw the head of the snake
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x + space_size, y + space_size);
+
+        let newHead = List.new(Point.new(x, y), null, head);
+        do head.setNext(newHead);
+        let head = newHead;
+
+
+
+        let flag = got_food(head.getData(), food.get_coordinate());
+
+        if (~flag){
+                    // erase tail 
+            do Helper.erase_square(tail.getData(), space_size);
+            let temp = tail;
+            let tail = tail.getNext(); 
+            do Memory.deAlloc(temp);
+        }
+        if (flag){
+            do food.createFood();
+        }
+
+        
+        do Sys.wait(Config.get_speed());
+
+        return;
+    }
+
+    method void moveUp(Food food){
+        var boolean flag;
+        var int x;
+        var int y;
+        var Point ptr;
+        var List newHead;
+        var List temp;
+        
+        let ptr = head.getData();
+        let x = ptr.get_x();
+        let y = ptr.get_y() - space_size;
+
+
+        // draw the head of the snake
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x + space_size, y + space_size);
+
+        let newHead = List.new(Point.new(x, y), null, head);
+        do head.setNext(newHead);
+        let head = newHead;
+
+
+
+        let flag = got_food(head.getData(), food.get_coordinate());
+
+        if (~flag){
+                    // erase tail 
+            do Helper.erase_square(tail.getData(), space_size);
+            let temp = tail;
+            let tail = tail.getNext(); 
+            do Memory.deAlloc(temp);
+        }
+        if (flag){
+            do food.createFood();
+        }
+
+       
+         do Sys.wait(Config.get_speed());
+
+       
+        return;
+    }
+
+    method void moveLeft(Food food){
+        var boolean flag;
+        var int x;
+        var int y;
+        var Point ptr;
+        var List newHead;
+        var List temp;
+        
+        let ptr = head.getData();
+        let x = ptr.get_x() - space_size;
+        let y = ptr.get_y();
+
+
+        // draw the head of the snake
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x + space_size, y + space_size);
+        
+        let newHead = List.new(Point.new(x, y), null, head);
+        do head.setNext(newHead);
+        let head = newHead;
+        
+        let flag = got_food(head.getData(), food.get_coordinate());
+
+        if (~flag){
+            // erase tail 
+            do Helper.erase_square(tail.getData(), space_size);
+            let temp = tail;
+            let tail = tail.getNext(); 
+            do Memory.deAlloc(temp);
+        }
+        if (flag){
+            do food.createFood();
+        }
+
+
+        do Sys.wait(Config.get_speed());
+
+      
+       return;
+    }
+
+    method void moveRight(Food food){
+        var boolean flag;
+        var int x;
+        var int y;
+        var Point ptr;
+        var List newHead;
+        var List temp;
+        
+        let ptr = head.getData();
+        let x = ptr.get_x() + space_size;
+        let y = ptr.get_y();
+
+
+        // draw the head of the snake
+        do Screen.setColor(true);
+        do Screen.drawRectangle(x, y, x + space_size, y + space_size);
+
+        let newHead = List.new(Point.new(x, y), null, head);
+        do head.setNext(newHead);
+        let head = newHead;
+
+        let flag = got_food(head.getData(), food.get_coordinate());
+
+        if (~flag){
+
+
+            // erase tail 
+            do Helper.erase_square(tail.getData(), space_size);
+            let temp = tail;
+            let tail = tail.getNext(); 
+            do Memory.deAlloc(temp);
+        }
+        if (flag){
+            do food.createFood();
+        }
+
+
+        
+        do Sys.wait(Config.get_speed());
+
+
+       return;
+    }
+    
+    method void dispose(){
+
+        do Memory.deAlloc(this);
+        return;
+    }
+
+
+    method boolean got_food(Point head, Point food){
+        var boolean flag;
+        let flag = false;
+
+        if (head.get_x() = food.get_x()) {
+            if (head.get_y() = food.get_y()){
+               let flag = true; 
+            }
+        }
+        
+        return flag;
+    }
+
+
+}

@@ -1,0 +1,38 @@
+class Config{
+    static int GAME_WIDTH;
+    static int GAME_HEIGHT;
+    static int SPACE_SIZE;
+    static int BODY_PARTS;
+    static int SPEED;
+
+    function void set_config(){
+        let GAME_WIDTH = 511;   
+        let GAME_HEIGHT = 255; 
+        let SPACE_SIZE = 20; 
+        let BODY_PARTS = 3;
+        let SPEED = 300;
+
+        return;
+    } 
+
+    function int get_space_size(){
+        return SPACE_SIZE;
+    }
+
+    function int get_game_width(){
+        return GAME_WIDTH;
+    }
+
+    function int get_game_height(){
+        return GAME_HEIGHT;
+    }
+
+    function int get_body_parts(){
+        return BODY_PARTS;
+    }
+
+    function int get_speed(){
+        return SPEED;
+    }
+   
+}

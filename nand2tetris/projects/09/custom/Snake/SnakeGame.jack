@@ -1,0 +1,85 @@
+class SnakeGame{
+    field Food food;
+    field Snake snake;
+    static int score;
+    field int direction;
+    field boolean exit;
+
+    constructor SnakeGame new(){
+        let food = Food.new();
+        let snake = Snake.new();
+        let direction = 2;
+        
+        do food.createFood();
+        
+
+        return this;
+    }
+    
+    method void run(){
+
+        var char key;  // the key currently pressed by the user
+        var boolean exit;
+        let exit = false;
+        
+        while (~exit) {
+            // waits for a key to be pressed
+            while (key = 0) {
+                let key = Keyboard.keyPressed();
+                do moveSnake();
+            }
+            if (key = 81)  { let exit = true; }     // q key
+            if (key = 131) { let direction = 1; }   // up arrow
+            if (key = 133) { let direction = 2; }   // down arrow
+            if (key = 130) { let direction = 3; }   // left arrow
+            if (key = 132) { let direction = 4; }   // right arrow
+
+            // waits for the key to be released
+            while (~(key = 0)) {
+                let key = Keyboard.keyPressed();
+                do moveSnake();
+            }
+        } // while
+
+
+
+        return;
+    }
+
+    method void dispose(){
+
+
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void moveSnake(){
+        if (direction = 1) { do snake.moveUp(food); }
+        if (direction = 2) { do snake.moveDown(food); }
+        if (direction = 3) { do snake.moveLeft(food); }
+        if (direction = 4) { do snake.moveRight(food); }
+
+        return;
+    }
+
+    method void check_collision(Snake snake){
+
+        return;
+    }
+
+    method void game_over(){
+
+        return;
+    }
+
+    function void setScore(int newScore){
+        let score = newScore;
+
+        return;
+    }
+
+    function int getScore(){
+
+        return score;
+    }
+}

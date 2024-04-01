@@ -1,0 +1,45 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/09/List/List.jack
+
+/** Represents a linked list of integers. */
+class List {
+    field Point data;          // an int value,
+    field List next;         // followed by a list of int values
+    field List prev;
+
+    /* Creates a List. */
+    constructor List new(Point pt, List cdr, List aprev) {
+        let data = pt;      // the identifiers car and cdr are used in 
+        let next = cdr;      // memory of the Lisp programming language
+        let prev = aprev;
+
+        return this;
+    }
+
+    /** Accessors. */
+    method Point getData() { return data; }
+    method List getNext() { return next; }
+    method List getPrev() { return prev; }
+
+
+    /** Setter */
+    method void setPrev(List p) { let prev = p; return; }
+    method void setNext(List n) { let next = n; return; }
+    
+
+    /** Disposes this List. */
+    // By recursively disposing its tail.
+    method void dispose() {
+        if (~(prev = null)) {
+            do prev.dispose();
+        }
+        // Calls an OS routine to free the memory of this object.
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    // More list processing methods can come here.
+
+}

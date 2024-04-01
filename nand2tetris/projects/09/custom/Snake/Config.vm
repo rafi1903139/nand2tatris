@@ -1,0 +1,28 @@
+function Config.set_config 0
+push constant 511
+pop static 0
+push constant 255
+pop static 1
+push constant 20
+pop static 2
+push constant 3
+pop static 3
+push constant 300
+pop static 4
+push constant 0
+return
+function Config.get_space_size 0
+push static 2
+return
+function Config.get_game_width 0
+push static 0
+return
+function Config.get_game_height 0
+push static 1
+return
+function Config.get_body_parts 0
+push static 3
+return
+function Config.get_speed 0
+push static 4
+return

@@ -1,0 +1,54 @@
+class Food{
+    field Point coordinate;
+    field int food_size;
+
+
+    constructor Food new(){
+        do Helper.set_seed();
+        do Config.set_config();
+
+
+        let food_size = Config.get_space_size();
+
+                
+                
+        return this;
+    }
+
+    method void dispose(){
+
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void createFood(){
+        var int x;
+        var int y;
+        var int temp;
+
+        let temp = Config.get_game_width() / Config.get_space_size() - 1;
+        let x = Helper.random(temp) * Config.get_space_size();
+
+        let temp = Config.get_game_height() / Config.get_space_size() - 1;
+        let y = Helper.random(temp) * Config.get_space_size();
+        
+        let coordinate = Point.new(x, y);
+
+        do Screen.drawRectangle(x, y, x + food_size, y + food_size );
+
+        return;
+    }
+
+    method void clearFood(){
+        
+        do Screen.setColor(false);
+        do Screen.drawRectangle(coordinate.get_x(), coordinate.get_y(), coordinate.get_x() + food_size, coordinate.get_y() + food_size );
+        do Screen.setColor(true);
+
+        return;
+    }
+
+    method Point get_coordinate(){
+        return coordinate;
+    }
+}
