@@ -6,6 +6,7 @@ class CompilationEngine:
     def __init__(self, fileName):
        self.tokenizer = Tokenizer(fileName) 
        self.file = open(f"{fileName.split('.')[0]}.xml", "w")
+       self.tabspace = ""
 
        token = self.getToken()
        if token == 'class':
@@ -15,8 +16,12 @@ class CompilationEngine:
            
     
     def compileClass(self):
+
         xmlOutput = "<class>\n"
-        xmlOutput += f"\t{self.writeKeyword('class')}"
+        self.tabspace += "\t"
+        tabspace = self.tabspace
+
+        xmlOutput += f"{self.writeKeyword('class')}"
 
 
         className = self.getToken()
@@ -42,8 +47,10 @@ class CompilationEngine:
             currentToken = self.getToken()
             if currentToken == 'staic' or currentToken == 'field':
                 self.compileClassVarDec()
+
             elif currentToken == 'constructor' or currentToken == 'function' or currentToken == 'method':
                 self.compileSubroutine()
+
             else:
                 print("Invalid format in class declaration")
                 return 
@@ -54,13 +61,17 @@ class CompilationEngine:
             print("Missing ending curly braces for class")
         
         self.file.write("</class>\n")
+        self.tabspace = self.tabspace.removesuffix("\t")
 
 
     def compileClassVarDec(self):
         pass 
 
     def compileSubroutine(self):
-        xmlOutput = "<subroutineDec>\n"
+        tabspace = self.tabspace
+        xmlOutput = tabspace + "<subroutineDec>\n"
+        self.tabspace += "\t"
+        tabspace = self.tabspace
 
         xmlOutput += self.writeKeyword(self.tokenizer.currentToken)
 
@@ -91,7 +102,7 @@ class CompilationEngine:
         token = self.getToken()
 
         if token == '(':
-            xmlOutput += self.writeKeyword(token)
+            xmlOutput += self.writeSymbol(token)
         else:
             print("Missing opening brace")
             return 
@@ -110,6 +121,7 @@ class CompilationEngine:
         self.compileSubroutineBody() 
 
         self.file.write("</subroutineDec>\n")
+        self.tabspace = self.tabspace.removesuffix("\t")
     
 
     def compileParameterList(self):
@@ -120,7 +132,7 @@ class CompilationEngine:
         token = self.getToken()
         
         if self.isType():
-            xmlOutput += f"\t{self.generateType()}"
+            xmlOutput += f"{self.generateType()}"
         else:
             # no parameter found
             return 
@@ -129,7 +141,7 @@ class CompilationEngine:
         token = self.getToken() 
 
         if self.tokenizer.tokenType() == IDENTIFIER:
-            xmlOutput += f"\t{self.writeIdentifier(token)}"
+            xmlOutput += f"{self.writeIdentifier(token)}"
         else:
             print("invalid identifier in parameterlist")
             return 
@@ -139,13 +151,13 @@ class CompilationEngine:
         token = self.getToken() 
 
         while self.tokenizer.hasMoreToken() and token != ')' and token == ',':
-            xmlOutput += f"\t{self.writeSymbol(token)}"
+            xmlOutput += f"{self.writeSymbol(token)}"
 
             # get type
             token = self.getToken()
             
             if self.isType():
-                xmlOutput += f"\t{self.generateType()}"
+                xmlOutput += f"{self.generateType()}"
             else:
                 print("Invalid type in parameterlist")
                 return
@@ -154,7 +166,7 @@ class CompilationEngine:
             token = self.getToken() 
 
             if self.tokenizer.tokenType() == IDENTIFIER:
-                xmlOutput += f"\t{self.writeIdentifier(token)}"
+                xmlOutput += f"{self.writeIdentifier(token)}"
             else:
                 print("invalid varName in parameterlist")
                 return  
@@ -172,7 +184,11 @@ class CompilationEngine:
 
         # get opening curly brace
         token = self.getToken()
-        xmlOutput = "\t<subroutineBody>\n"
+        tabspace = self.tabspace
+        xmlOutput = tabspace + "<subroutineBody>\n"
+
+
+        self.tabspace += "\t"
 
         if token == '{':
             xmlOutput += self.writeSymbol(token)
@@ -202,18 +218,24 @@ class CompilationEngine:
             print("Missing closing curly braces for subroutine body")
             return 
         
-        self.file.write("\t</subroutineBody>\n")
+        self.file.write(tabspace + "</subroutineBody>\n")
+        self.tabspace = self.tabspace.removesuffix("\t")
 
     def compileVarDec(self):
         # 'var' type varName(',' varName)*';'
-        xmlOutput = "\t<varDec>\n"
-        xmlOutput += f"\t{self.writeKeyword('var')}"
+
+        tabspace = self.tabspace
+        xmlOutput = tabspace + "<varDec>\n"
+        
+        self.tabspace += '\t'
+
+        xmlOutput += f"{self.writeKeyword('var')}"
 
         # get type
         token = self.getToken() 
 
         if self.isType():
-            xmlOutput += f"\t{self.generateType()}" 
+            xmlOutput += f"{self.generateType()}" 
         else:
             print("Missing type")
             return  
@@ -221,7 +243,7 @@ class CompilationEngine:
         # get varName 
         token = self.getToken() 
         if self.tokenizer.tokenType() == IDENTIFIER:
-            xmlOutput += f"\t{self.writeIdentifier(token)}" 
+            xmlOutput += f"{self.writeIdentifier(token)}" 
         else:
             print("Missing variable name in varDec")
             return 
@@ -229,11 +251,11 @@ class CompilationEngine:
         # get token and decide 
         token = self.getToken() 
         while self.tokenizer.hasMoreToken() and token != ';' and token == ',':
-            xmlOutput += f"\t{self.writeSymbol(token)}" 
+            xmlOutput += f"{self.writeSymbol(token)}" 
             # get identifier 
             token = self.getToken() 
             if self.tokenizer.tokenType() == IDENTIFIER:
-                xmlOutput += f"\t{self.writeIdentifier(token)}"
+                xmlOutput += f"{self.writeIdentifier(token)}"
             else:
                 print("Invalid identifier in varDec")
                 return
@@ -245,20 +267,27 @@ class CompilationEngine:
             print("Missing ; after varDec")
             return 
         else:
-            xmlOutput += f'\t{self.writeSymbol(token)}'
+            xmlOutput += f'{self.writeSymbol(token)}'
         
-        xmlOutput += '\t</varDec>\n'
+        xmlOutput += tabspace + '</varDec>\n'
     
         self.getToken()
         self.file.write(xmlOutput)
 
+        self.tabspace = self.tabspace.removesuffix("\t")
+
+
     def compileStatements(self):
+
 
         if not self.isStatement():
             return 
-        
-        xmlOutput = "\t<statements\n>"
 
+        tabspace = self.tabspace
+        
+        xmlOutput = tabspace + "<statements>\n"
+
+        self.tabspace += "\t"
         self.file.write(xmlOutput)
 
         while self.tokenizer.hasMoreToken() and self.isStatement():
@@ -278,20 +307,26 @@ class CompilationEngine:
             # get the next token and decide 
             self.getToken() 
 
-        xmlOutput = "\t</statements>\n"
+        xmlOutput = tabspace + "</statements>\n"
         self.file.write(xmlOutput)
+
+
+        self.tabspace = self.tabspace.removesuffix("\t")
 
     def compileLet(self):
         # 'let' varName ('[' expression ']')? '=' expression';'
+        tabspace = self.tabspace 
+        xmlOutput = tabspace + "<letStatement>\n"
+        
+        self.tabspace += "\t"
 
-        xmlOutput = "\t\t<letStatement>\n"
-        xmlOutput += f"\t\t\t{self.writeKeyword(self.tokenizer.currentToken)}"
+        xmlOutput += f"{self.writeKeyword(self.tokenizer.currentToken)}"
 
         # get varName 
         token = self.getToken()
 
         if self.tokenizer.tokenType() == IDENTIFIER:
-            xmlOutput += f"\t\t\t{self.writeIdentifier(token)}"
+            xmlOutput += f"{self.writeIdentifier(token)}"
         else:
             print("Missing identifier in let statment")
         
@@ -305,34 +340,188 @@ class CompilationEngine:
         # get '=' 
         
         if self.tokenizer.currentToken == '=':
-            xmlOutput = f"\t\t\t{self.writeSymbol(token)}"
+            xmlOutput = f"{self.writeSymbol(token)}"
             self.file.write(xmlOutput)
         else:
             print("Missing = in letStatemtn")
             return 
         
         # get expression 
-        token = self.getToken() 
-        # process expression 
         # TODO 
         self.compileExpression()
 
         # get ';' 
-        if self.tokenizer.currentToken == ';':
-            xmlOutput = f"\t\t\t{self.writeSymbol(self.tokenizer.currentToken)}"
+        token = self.getToken()
+        if token == ';':
+            xmlOutput = f"{self.writeSymbol(self.tokenizer.currentToken)}"
         else:
             print("Missing ; in let statement")
             return
 
-        xmlOutput += "\t</letStatement>\n"
+        xmlOutput += tabspace + "</letStatement>\n"
 
         self.file.write(xmlOutput) 
+        self.tabspace = self.tabspace.removesuffix("\t")
 
     def compileIf(self):
-        pass 
+        # 'if' '(' expression ')' '{' statements '}' ('else''{' statements '}')?
+        tabspace = self.tabspace 
+        token = self.tokenizer.currentToken
 
+        self.tabspace += "\t"
+
+        xmlOutput = f"{tabspace}<ifStatement>\n"
+        xmlOutput += f"{self.writeKeyword(token)}"
+
+        # get '(' 
+        token = self.getToken() 
+
+        if token != '(':
+            print("Missing opening breaces in if statement")
+            return 
+        
+        xmlOutput += f"{self.writeSymbol(token)}"
+        self.file.write(xmlOutput)
+
+        self.compileExpression() 
+
+        # get ')' 
+        token = self.tokenizer.currentToken 
+
+        if token != ')':
+            print("Missing closing braces in if statement")
+            return 
+        
+        xmlOutput = f"{self.writeSymbol(token)}"
+
+        # get '{' 
+        token = self.getToken() 
+
+        if token != '{':
+            print("Missing { in if")
+            return  
+        
+        xmlOutput += f"{self.writeSymbol(token)}"
+
+        self.file.write(xmlOutput)
+
+        token = self.getToken()
+        
+        self.compileStatements() 
+
+        # get '}' 
+        token = self.tokenizer.currentToken 
+        if token != '}':
+            print("Missing } in if")
+            return 
+        
+        xmlOutput = f"{self.writeSymbol(token)}" 
+        self.file.write(xmlOutput)
+
+        # get token and decide 
+        token = self.getToken() 
+
+        if token != 'else':
+            xmlOutput = tabspace + "</ifStatement>\n"
+            self.file.write(xmlOutput)
+            self.tabspace = self.tabspace.removesuffix("\t")
+            return 
+        
+        xmlOutput = f"{self.writeKeyword(token)}"
+
+
+        # get '{' 
+        token = self.getToken() 
+
+        if token != '{':
+            print("Missing { in if")
+            return  
+        
+        xmlOutput += f"{self.writeSymbol(token)}"
+
+        self.file.write(xmlOutput)
+
+        token = self.getToken()
+        
+        self.compileStatements() 
+
+        # get '}' 
+        token = self.tokenizer.currentToken 
+
+        if token != '}':
+            print("Missing } in else")
+            return 
+        
+        xmlOutput = f"{self.writeSymbol(token)}" 
+        xmlOutput += tabspace + "</ifStatement>\n"
+        self.file.write(xmlOutput)
+
+        self.tabspace = self.tabspace.removesuffix("\t")
+
+            
     def compileWhile(self):
-        pass
+    # 'while' '(' expression ')' '{' statements '}'
+       tabspace = self.tabspace 
+
+       xmlOutput = tabspace + "<whileStatement>\n"
+
+       self.tabspace += "\t"
+       
+       # get while
+       token = self.tokenizer.currentToken 
+
+       xmlOutput += self.writeKeyword(token)
+
+       # get '('
+       token = self.getToken() 
+
+       if token != "(":
+           print("Missing ( in while")
+           return 
+       
+       xmlOutput += self.writeSymbol(token)
+
+       self.file.write(xmlOutput)
+
+       self.compileExpression() 
+
+       # get ')' 
+       token = self.tokenizer.currentToken 
+
+       if token != ')':
+           print("Missing ) in while")
+           return 
+       
+       xmlOutput = self.writeSymbol(token)
+
+       # get '{'
+       token = self.getToken() 
+
+       if token != '{':
+           print("Missing { in while")
+           return 
+       
+       xmlOutput += self.writeSymbol(token)
+
+       self.file.write(xmlOutput)
+
+       token = self.getToken()
+       self.compileStatements() 
+
+       # get '}' 
+       token = self.tokenizer.currentToken 
+       if token != '}':
+           print("Missing } in while")
+           return 
+       
+       xmlOutput = self.writeSymbol(token)
+
+       xmlOutput += tabspace + "</whileStatement>\n"
+
+       self.file.write(xmlOutput)
+
+       self.tabspace = self.tabspace.removesuffix("\t") 
+
 
     def compileDo(self):
         pass 
@@ -341,42 +530,49 @@ class CompilationEngine:
         pass 
 
     def compileExpression(self):
-       
-        xmlOutput = "\t<expression>\n"
+        
+        tabspace = self.tabspace
+        xmlOutput = tabspace + "<expression>\n"
+
+        self.tabspace += "\t"
 
         self.file.write(xmlOutput)
+    
 
         self.compileTerm() 
 
-        token = self.getToken()
         while self.isOperator():
             self.compileTerm() 
         
 
-        xmlOutput ="\t</expression>\n"
+        xmlOutput = tabspace + "</expression>\n"
         self.file.write(xmlOutput)       
+        self.tabspace = self.tabspace.removesuffix("\t")
 
-        pass 
 
     def compileTerm(self):
-        
-        xmlOutput = "\t\t<term>\n"
-        token = self.tokenizer.currentToken 
+
+        tabspace = self.tabspace 
+        xmlOutput = tabspace + "<term>\n"
+
+        self.tabspace += "\t"
+
+        token = self.getToken() 
         tokenType = self.tokenizer.tokenType() 
 
         if tokenType == INT_CONST:
-            xmlOutput += f"\t\t{self.writeIntegerConstant(token)}"
+            xmlOutput += f"{self.writeIntegerConstant(token)}"
         elif tokenType == STRING_CONST:
-            xmlOutput += f"\t\t{self.writeStringConstant(token)}"
+            xmlOutput += f"{self.writeStringConstant(token)}"
         elif self.isKeywordConst():
-            xmlOutput += f"\t\t{self.writeKeyword(token)}" 
+            xmlOutput += f"{self.writeKeyword(token)}" 
         elif self.isUnaryOp():
-            xmlOutput += f"\t\t\t{self.writeSymbol(token)}"
+            xmlOutput += f"{self.writeSymbol(token)}"
             self.file.write(xmlOutput)
             xmlOutput = ""
             self.compileTerm()
         elif token == '(':
-            xmlOutput += f"\t\t\t{self.writeSymbol(token)}"
+            xmlOutput += f"{self.writeSymbol(token)}"
             self.file.write(xmlOutput)
             xmlOutput = ""
             self.compileExpression()
@@ -387,50 +583,87 @@ class CompilationEngine:
                 print("Missing closing paranthesis in term")
                 return 
             
-            xmlOutput += f"\t\t\t{self.writeSymbol(token)}"
+            xmlOutput += f"{self.writeSymbol(token)}"
         elif tokenType == IDENTIFIER:
             
-            xmlOutput += f"\t\t\t{self.writeIdentifier(token)}"
+            xmlOutput += f"{self.writeIdentifier(token)}"
 
             # get next token and decide
             token = self.getToken() 
 
 
             if token == '[':
-                xmlOutput += f"\t\t\t{self.writeSymbol(token)}"
+                xmlOutput += f"{self.writeSymbol(token)}"
+                self.file.write(xmlOutput)
+
                 self.compileExpression() 
                 
                 # get ']' 
-                token = self.compileExpression() 
+                token = self.tokenizer.currentToken 
 
                 if token != ']':
                     print("Missing closing bracket in  term varName[expression]")
                     return 
                 
 
-                xmlOutput = f"\t\t\t{self.writeSymbol(token)}"
+                xmlOutput = f"{self.writeSymbol(token)}"
 
             elif token == '(':
-                xmlOutput += f"\t\t\t{self.writeSymbol(token)}"
+                xmlOutput += f"{self.writeSymbol(token)}"
+                self.file.write(xmlOutput)
+
                 self.compileExpressionList() 
                 
-                # get ']' 
-                token = self.compileExpression() 
+                # get ')' 
+                token = self.tokenizer.currentToken 
 
                 if token != ')':
                     print("Missing closing bracket in  term subroutine call varName(expression)")
                     return 
                 
 
-                xmlOutput = f"\t\t\t{self.writeSymbol(token)}"
+                xmlOutput = f"{self.writeSymbol(token)}"
 
             elif token == '.':
-                            
+                xmlOutput += f"{self.writeSymbol(token)}"
 
+                # get subroutine name
+                token = self.getToken()
+
+                if self.tokenizer.tokenType != IDENTIFIER:
+                    print("Missing identifier in subroutine call")
+                    return 
+                
+                xmlOutput += f"{self.writeIdentifier(token)}"
+
+                # get '(' 
+                token = self.getToken() 
+
+                if token != '(':
+                    print("Missing ( in subroutine call")
+                    return 
+
+                xmlOutput += f"{self.writeIdentifier(token)}"
+
+                self.file.write(xmlOutput)
+
+
+                self.compileExpressionList() 
+
+                # get ')' 
+                token = self.tokenizer.currentToken 
+
+                if token != ')':
+                    print("Missing ) in subroutine call")
+                    return 
+                
+                xmlOutput = f"{self.writeIdentifier(token)}"
 
         
         self.file.write(xmlOutput)
-        self.file.write("\t\t</term>\n")
+        self.file.write(tabspace + "</term>\n")
+
+        self.tabspace = self.tabspace.removesuffix("\t")
         
 
     def compileExpressionList(self):
@@ -446,19 +679,19 @@ class CompilationEngine:
             return None
 
     def writeIdentifier(self, identifier):
-        return f"\t<identifier> {identifier} </identifier>\n"
+        return self.tabspace + f"<identifier> {identifier} </identifier>\n"
     
     def writeKeyword(self, keyword):
-        return f"\t<keyword> {keyword} </keyword>\n"
+        return self.tabspace + f"<keyword> {keyword} </keyword>\n"
     
     def writeSymbol(self, symbol):
-        return f"\t<symbol> {symbol} </symbol>\n"
+        return self.tabspace + f"<symbol> {symbol} </symbol>\n"
     
     def writeIntegerConstant(self, num):
-        return f"\t<integerConstant> {num} </integerConstant>\n"
+        return self.tabspace + f"<integerConstant> {num} </integerConstant>\n"
     
     def writeStringConstant(self, strConst):
-        return f"\t<stringConstant> {strConst} </stringConstant>\n"
+        return self.tabspace + f"<stringConstant> {strConst} </stringConstant>\n"
     
     def isType(self):
         token = self.tokenizer.currentToken

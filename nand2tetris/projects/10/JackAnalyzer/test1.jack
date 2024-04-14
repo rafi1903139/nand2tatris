@@ -4,6 +4,22 @@ class Main{
 		var char c1, c1;
 
 		let num1 = 10;
+
+		if (x) {
+			let num2 = 21;
+			let abs = "Hello";
+		}
+		else {
+			let num3 = 22;
+			let num4 = 23;
+		}
+
+		while(x){
+			let num2 = 3;
+			if(y){
+				let x= 4;
+			}
+		}
 	}
 
 }
