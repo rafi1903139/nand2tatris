@@ -45,6 +45,17 @@ class Tokenizer:
         if '//' in self.command:
             self.command = self.command[0:self.command.find("//")]
             self.command = self.command.strip()
+        
+        # testing purpose
+        if '/*' in self.command:
+            temp = self.command[self.command.find('/*') + 2: ]
+            self.command = self.command[0:self.command.find('/*')]
+            self.command.strip()
+
+            while self.hasMoreLines() and '*/' not in temp:
+                temp = self.file.readline()
+            self.command = temp[temp.find('*/') + 2:]
+            self.command.strip()
 
         self.command = self.command.split(' ')
         self.command = [str.strip() for str in self.command if str.strip() != '']
@@ -88,6 +99,7 @@ class Tokenizer:
             if suff:
                 self._tokens.insert(0, suff)
             self.currentToken = tempStr.strip()
+
             return
         else:
             self.isStrConst = False

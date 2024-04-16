@@ -1,4 +1,6 @@
+import sys
 from compilationEngine import * 
 
-compiler = CompilationEngine("test1.jack")
+source = sys.argv[1]
+compiler = CompilationEngine(source)
 
