@@ -39,8 +39,8 @@ push constant 1
 add
 call Array.new 1
 pop local 0
-push constant 0
 push local 0
+push constant 0
 add
 push argument 2
 pop temp 0
@@ -51,17 +51,17 @@ push constant 0
 pop local 2
 push constant 1
 pop local 1
-label WHILE_EXP0
+label label0
 push local 2
 push argument 1
 lt
 not
-if-goto WHILE_END0
-push local 1
+if-goto label1
 push local 0
+push local 1
 add
-push local 2
 push argument 0
+push local 2
 add
 pop pointer 1
 push that 0
@@ -77,8 +77,8 @@ push local 2
 push constant 1
 add
 pop local 2
-goto WHILE_EXP0
-label WHILE_END0
+goto label0
+label label1
 push local 0
 return
 function Helper.remove_point 3
@@ -93,17 +93,17 @@ sub
 pop argument 1
 push constant 0
 pop local 1
-label WHILE_EXP0
+label label2
 push local 1
 push argument 1
 lt
 not
-if-goto WHILE_END0
-push local 1
+if-goto label3
 push local 0
-add
 push local 1
+add
 push argument 0
+push local 1
 add
 pop pointer 1
 push that 0
@@ -111,8 +111,8 @@ pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
-goto WHILE_EXP0
-label WHILE_END0
+goto label2
+label label3
 push local 0
 return
 function Helper.erase_square 0
@@ -133,8 +133,8 @@ push argument 1
 add
 call Screen.drawRectangle 4
 pop temp 0
-push constant 0
-not
+push constant 1
+neg
 call Screen.setColor 1
 pop temp 0
 push constant 0
@@ -142,14 +142,14 @@ return
 function Helper.print_points 2
 push constant 0
 pop local 0
-label WHILE_EXP0
+label label4
 push local 0
 push argument 1
 lt
 not
-if-goto WHILE_END0
-push local 0
+if-goto label5
 push argument 0
+push local 0
 add
 pop pointer 1
 push that 0
@@ -158,10 +158,8 @@ push local 1
 call Point.get_x 1
 call Output.printInt 1
 pop temp 0
-push constant 1
+push constant 0
 call String.new 1
-push constant 32
-call String.appendChar 2
 call Output.printString 1
 pop temp 0
 push local 1
@@ -174,8 +172,8 @@ push local 0
 push constant 1
 add
 pop local 0
-goto WHILE_EXP0
-label WHILE_END0
+goto label4
+label label5
 call Output.println 0
 pop temp 0
 push constant 0

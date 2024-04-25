@@ -18,86 +18,91 @@ push argument 0
 pop pointer 0
 push constant 0
 pop local 1
-label WHILE_EXP0
+label label0
 push local 1
 not
 not
-if-goto WHILE_END0
-label WHILE_EXP1
+if-goto label1
+label label2
 push local 0
 push constant 0
 eq
 not
-if-goto WHILE_END1
+if-goto label3
 call Keyboard.keyPressed 0
 pop local 0
 push pointer 0
 call SnakeGame.moveSnake 1
 pop temp 0
-goto WHILE_EXP1
-label WHILE_END1
+goto label2
+label label3
 push local 0
 push constant 81
 eq
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
-push constant 0
 not
+if-goto label4
+push constant 1
+neg
 pop local 1
-label IF_FALSE0
+goto label5
+label label4
+label label5
 push local 0
 push constant 131
 eq
-if-goto IF_TRUE1
-goto IF_FALSE1
-label IF_TRUE1
+not
+if-goto label6
 push constant 1
 pop this 2
-label IF_FALSE1
+goto label7
+label label6
+label label7
 push local 0
 push constant 133
 eq
-if-goto IF_TRUE2
-goto IF_FALSE2
-label IF_TRUE2
+not
+if-goto label8
 push constant 2
 pop this 2
-label IF_FALSE2
+goto label9
+label label8
+label label9
 push local 0
 push constant 130
 eq
-if-goto IF_TRUE3
-goto IF_FALSE3
-label IF_TRUE3
+not
+if-goto label10
 push constant 3
 pop this 2
-label IF_FALSE3
+goto label11
+label label10
+label label11
 push local 0
 push constant 132
 eq
-if-goto IF_TRUE4
-goto IF_FALSE4
-label IF_TRUE4
+not
+if-goto label12
 push constant 4
 pop this 2
-label IF_FALSE4
-label WHILE_EXP2
+goto label13
+label label12
+label label13
+label label14
 push local 0
 push constant 0
 eq
 not
 not
-if-goto WHILE_END2
+if-goto label15
 call Keyboard.keyPressed 0
 pop local 0
 push pointer 0
 call SnakeGame.moveSnake 1
 pop temp 0
-goto WHILE_EXP2
-label WHILE_END2
-goto WHILE_EXP0
-label WHILE_END0
+goto label14
+label label15
+goto label0
+label label1
 push constant 0
 return
 function SnakeGame.dispose 0
@@ -114,47 +119,51 @@ pop pointer 0
 push this 2
 push constant 1
 eq
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
+not
+if-goto label16
 push this 1
 push this 0
 call Snake.moveUp 2
 pop temp 0
-label IF_FALSE0
+goto label17
+label label16
+label label17
 push this 2
 push constant 2
 eq
-if-goto IF_TRUE1
-goto IF_FALSE1
-label IF_TRUE1
+not
+if-goto label18
 push this 1
 push this 0
 call Snake.moveDown 2
 pop temp 0
-label IF_FALSE1
+goto label19
+label label18
+label label19
 push this 2
 push constant 3
 eq
-if-goto IF_TRUE2
-goto IF_FALSE2
-label IF_TRUE2
+not
+if-goto label20
 push this 1
 push this 0
 call Snake.moveLeft 2
 pop temp 0
-label IF_FALSE2
+goto label21
+label label20
+label label21
 push this 2
 push constant 4
 eq
-if-goto IF_TRUE3
-goto IF_FALSE3
-label IF_TRUE3
+not
+if-goto label22
 push this 1
 push this 0
 call Snake.moveRight 2
 pop temp 0
-label IF_FALSE3
+goto label23
+label label22
+label label23
 push constant 0
 return
 function SnakeGame.check_collision 0

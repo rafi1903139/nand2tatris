@@ -46,13 +46,14 @@ push this 2
 push constant 0
 eq
 not
-if-goto IF_TRUE0
-goto IF_FALSE0
-label IF_TRUE0
+not
+if-goto label0
 push this 2
 call List.dispose 1
 pop temp 0
-label IF_FALSE0
+goto label1
+label label0
+label label1
 push pointer 0
 call Memory.deAlloc 1
 pop temp 0

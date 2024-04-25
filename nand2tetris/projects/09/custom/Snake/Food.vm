@@ -79,8 +79,8 @@ push this 1
 add
 call Screen.drawRectangle 4
 pop temp 0
-push constant 0
-not
+push constant 1
+neg
 call Screen.setColor 1
 pop temp 0
 push constant 0
