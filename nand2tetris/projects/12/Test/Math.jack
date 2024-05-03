@@ -64,19 +64,6 @@ class Math {
     function int divide(int x, int y) {
 
         var int q;
-        var boolean isNeg;
-
-        if (x < 0){
-            let isNeg = true;
-        }
-
-        if (y < 0){
-            let isNeg = true;
-        }
-
-        let x = Math.abs(x);
-        let y = Math.abs(y);
-
 
         if (y > x) {
             return 0;
@@ -85,20 +72,10 @@ class Math {
         let q = Math.divide(x, 2 * y);
 
         if ((x - (2 * q * y)) < y) {
-            if(isNeg){
-                return -(2 * q);
-            }
-            else {
-                return 2 * q;
-            }
+            return 2 * q;
         }
         else {
-            if (isNeg){
-                return -(2 * q + 1);
-            }
-            else {
-                return (2 * q + 1);
-            }
+            return 2 * q + 1;
         }
 
 
@@ -107,16 +84,13 @@ class Math {
     /** Returns the integer part of the square root of x.
     */
     function int sqrt(int x) {
-        var int y, i, temp;
+        var int y, i;
 
         let y = 0;
         let i = 7;  // n/2 - 1 = 8
 
         while (i > -1){
-            let temp = y + powersOfTwo[i];
-            let temp = temp * temp;
-
-            if (((temp < x) | (temp = x)) & (temp > 0)) {
+            if ((y + powersOfTwo[i]) < x ) {
                 let y = y + powersOfTwo[i];
 
             }            
